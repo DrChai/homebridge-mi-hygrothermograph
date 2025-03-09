@@ -931,7 +931,7 @@ describe("accessory", () => {
 
   it("should set scanner.restartDelay to default when not set", () => {
     const accessory = new this.HygrothermographAccessory(mockLogger, {});
-    assert.strictEqual(accessory.scanner.restartDelay, 2500);
+    assert.strictEqual(accessory.scanner.restartDelay, 600 * 1000);
   });
 
   it("should set scanner.restartDelay when forceDiscoveringDelay is configured", () => {
@@ -939,7 +939,10 @@ describe("accessory", () => {
     const accessory = new this.HygrothermographAccessory(mockLogger, {
       forceDiscoveringDelay,
     });
-    assert.strictEqual(accessory.scanner.restartDelay, forceDiscoveringDelay);
+    assert.strictEqual(
+      accessory.scanner.restartDelay,
+      forceDiscoveringDelay * 1000
+    );
   });
 
   it("should batch update on change when configured with updateInterval", () => {

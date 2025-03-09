@@ -109,8 +109,14 @@
       "forceDiscoveringDelay": {
         "title": "Force Discovering Interval (seconds)",
         "type": "integer",
-        "default": 2500,
+        "default": 600,
         "description": "The delay for when to start scanning again when stopped. Only applicable if forceDiscovering is true."
+      },
+      "discoverInterval": {
+        "title": "Force stop Discovering after Interval (seconds)",
+        "type": "integer",
+        "default": 20,
+        "description": "Force stop Discovering after Interval (seconds)"
       },
       "updateInterval": {
         "title": "Update Interval (seconds)",

@@ -208,14 +208,18 @@ describe("scanner", () => {
     assert(changeEventSpy.called === false);
   });
 
-  it("should start scanning", () => {
+  it("should start scanning", async () => {
+    const clock = sinon.useFakeTimers();
     const startScanningStub = sinon.stub(nobleMock, "startScanning");
     const stopScanningStub = sinon.stub(nobleMock, "stopScanning");
 
     nobleMock.emit("stateChange", "poweredOn");
+    await clock.tickAsync(600 * 1000);
+
     assert(this.scanner.scanning);
     assert(startScanningStub.called);
     nobleMock.emit("stateChange", "poweredOff");
+    await clock.runAllAsync();
     assert(stopScanningStub.called);
     assert(this.scanner.scanning === false);
   });
@@ -300,17 +304,18 @@ describe("scanner", () => {
     );
   });
 
-  it("should retry on scanStop when forceDiscovering is true", () => {
+  it("should retry on scanStop when forceDiscovering is true", async () => {
     const clock = sinon.useFakeTimers();
     const scanner = new Scanner("de:ad:be:ef", {
       log: mockLogger,
       forceDiscovering: true,
     });
     nobleMock.emit("stateChange", "poweredOn");
-    const startSpy = sinon.spy(scanner, "start");
+    await clock.tickAsync(20 * 1000);
     nobleMock.emit("scanStop");
-    clock.tick(5001);
-    assert(startSpy.called);
+    const startStub = sinon.stub(scanner, "start").resolves();
+    await clock.tickAsync(600 * 1000 + 1);
+    assert(startStub.called);
   });
 
   it("should not retry on scanStop when forceDiscovering is false", () => {
